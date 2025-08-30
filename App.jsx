@@ -1,32 +1,33 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 // react-native-paper
 import {
   Provider as PaperProvider,
-  Button,
-  Text,
   MD3LightTheme,
   MD3DarkTheme,
-  adaptNavigationTheme,
+  
 } from 'react-native-paper';
+
+import { Provider } from 'react-redux';
+import store from './store';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+//Screen
 import Stock from './screens/Stock/Stock';
+import StoneDetail from './screens/Stock/StoneDetail';
+import StockViewer from './screens/StockView';
+
+
+
+const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
-  // 🎨 Define your custom brand colors
+  
   const customColors = {
     primary: '#6200ee', // purple
     secondary: '#03dac6', // teal
@@ -55,22 +56,26 @@ function App() {
   return (
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
+        <Provider store={store}>
+          <NavigationContainer>
+
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <AppContent />
+          </NavigationContainer>
+        </Provider>
       </PaperProvider>
     </SafeAreaProvider>
   );
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <Stock />
-      </View>
-    
-  );
+  return(
+  <Stack.Navigator initialRouteName="Stock Viewer">
+      <Stack.Screen name="Stock Viewer" component={StockViewer} />
+      <Stack.Screen name="Stock" component={Stock} />
+      <Stack.Screen name="Stone" component={StoneDetail} />
+    </Stack.Navigator>
+  )
 }
 
 const styles = StyleSheet.create({
